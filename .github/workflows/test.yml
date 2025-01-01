@@ -1,7 +1,7 @@
 name: Test
 on:
   pull_request:
-    paths: ['go/**/*.go']
+    paths: ['go/**/*.go'] # Only run on PRs that change files in the go directory
 jobs:
   test:
     runs-on: ubuntu-latest
