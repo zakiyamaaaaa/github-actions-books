@@ -14,6 +14,7 @@ jobs:
           script: |
             const branchName = github.head_ref;
             const labels = [];
+            console.log(`Branch name: ${branchName}`);
             
             if (branchName.startsWith("feature/")) {
               labels.push("enhancement");
