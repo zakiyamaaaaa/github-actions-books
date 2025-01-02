@@ -1,0 +1,28 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{github.ref_name}}
+      GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      RELEASE_TAG: ${{ github.event.pull_request.title }}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: get previous tag
+        id: pre_tag
+        run: |
+          echo "::set-output name=pre_tag::$(curl -H 'Accept: application/vnd.github.v3+json' https://api.github.com/repos/${{ github.repository }}/releases/tags/latest | jq -r '.tag_name')"
+      - name: Create Release Notes
+        id: release_note
+        run: |
+          echo "::set-output name=release_note::$(curl -X POST -H 'Accept: application/vnd.github.v3+json' -H "Authorization: token ${{secrets.GITHUB_TOKEN}}" https://api.github.com/repos/${{ github.repository }}/releases/generate-notes -d '{"tag_name": "${{steps.release_tag.outputs.release_tag}}", "previous_tag_name":"${{steps.pre_tag.outputs.pre_tag }}"}' }} | jq .body | sed 's/\"//g')"
+      - name: release Release Notes
+        run: |
+          gh release create "${VERSION}" --title "${VERSION}" --generate-notes
+        
