@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERSION: ${{github.ref_name}}
+      GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      RELEASE_TAG: ${{ github.event.pull_request.title }}
     permissions:
       contents: write
     steps:
@@ -20,10 +22,7 @@ jobs:
         id: release_note
         run: |
           echo "::set-output name=release_note::$(curl -X POST -H 'Accept: application/vnd.github.v3+json' -H "Authorization: token ${{secrets.GITHUB_TOKEN}}" https://api.github.com/repos/${{ github.repository }}/releases/generate-notes -d '{"tag_name": "${{steps.release_tag.outputs.release_tag}}", "previous_tag_name":"${{steps.pre_tag.outputs.pre_tag }}"}' }} | jq .body | sed 's/\"//g')"
-        env:
-            GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-            RELEASE_TAG: ${{ github.event.pull_request.title }}
-      
+      - name: release Release Notes
       - run: |
           gh release create "${VERSION}" --title "${VERSION}" --generate-notes
         
