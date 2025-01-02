@@ -12,7 +12,6 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            # const branchName = github.context.payload.pull_request.head.ref;
             const branchName = github.head_ref;
             const labels = [];
             
