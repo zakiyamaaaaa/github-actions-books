@@ -10,8 +10,8 @@ jobs:
     timeout-minutes: 3
     steps:
       - name: Add label based on branch name
-      env:
-        BRANCH_NAME: ${{github.head_ref}}
+        env:
+          BRANCH_NAME: ${{github.head_ref}}
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
