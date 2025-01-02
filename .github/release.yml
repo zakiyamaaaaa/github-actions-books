@@ -1,0 +1,13 @@
+changelog:
+  categories:
+    - title: Enhancement
+      labels:
+        - feature
+        - enhancement
+    - title: Bugfix
+      labels:
+        - fix
+        - bugfix
+  exclude:
+    labels:
+      - github_actions
