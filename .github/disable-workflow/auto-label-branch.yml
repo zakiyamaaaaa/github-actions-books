@@ -7,12 +7,19 @@ on:
 jobs:
   add-label:
     runs-on: ubuntu-latest
+    timeout-minutes: 3
     steps:
       - name: Add label based on branch name
+        env:
+          BRANCH_NAME: ${{github.head_ref}}
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const branchName = github.context.payload.pull_request.head.ref;
+            console.log(`Branch name: ${process.env.BRANCH_NAME}`);
+            # const branchName = github.context.payload.pull_request.head.ref;
+            const branchName = github.head_ref;
+            console.log(`Branch name: ${branchName}`);
             const labels = [];
             
             if (branchName.startsWith("feature/")) {
