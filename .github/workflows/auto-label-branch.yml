@@ -1,0 +1,31 @@
+name: Auto Label Based on Branch Name
+
+on:
+  pull_request:
+    types: [opened, synchronize] # PRが作成されたり更新されたときに実行
+
+jobs:
+  add-label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add label based on branch name
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const branchName = github.context.payload.pull_request.head.ref;
+            const labels = [];
+            
+            if (branchName.startsWith("feature/")) {
+              labels.push("enhancement");
+            } else if (branchName.startsWith("bugfix/")) {
+              labels.push("bugfix");
+            }
+
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: github.context.payload.pull_request.number,
+                labels: labels,
+              });
+            }
