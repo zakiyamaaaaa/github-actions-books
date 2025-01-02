@@ -3,17 +3,22 @@ name: Auto Label Based on Branch Name
 on:
   pull_request:
     types: [opened, synchronize] # PRが作成されたり更新されたときに実行
-
 jobs:
   add-label:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
     steps:
+      - uses: actions/checkout@v4
       - name: Add label based on branch name
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const branchName = github.context.payload.pull_request.head.ref;
+            const branchName = github.head_ref;
             const labels = [];
+            console.log(`Branch name: ${branchName}`);
             
             if (branchName.startsWith("feature/")) {
               labels.push("enhancement");
